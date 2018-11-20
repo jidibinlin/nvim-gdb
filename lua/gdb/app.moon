@@ -2,6 +2,7 @@ Client = require "gdb.client"
 Cursor = require "gdb.cursor"
 Breakpoint = require "gdb.breakpoint"
 Win = require "gdb.win"
+Trace = require "gdb.trace"
 
 fmt = string.format
 
@@ -29,6 +30,8 @@ class App
         -- Create new tab for the debugging view and split horizontally
         V.exe "tabnew | sp"
 
+        @trace = Trace()
+
         -- Enumerate the available windows
         wins = V.list_wins!
         table.sort wins
@@ -49,10 +52,11 @@ class App
         @win = Win(wjump, @client, @cursor, @breakpoint)
 
         -- Initialize the SCM
-        @scm = @backend\initScm(@cursor, @win)
+        @scm = @backend\initScm(@cursor, @win, @trace)
 
         -- The SCM should be ready by now, spawn the debugger!
         @client\start!
+        @trace\log("started")
 
     cleanup: =>
         -- Clean up the breakpoint signs
@@ -126,6 +130,9 @@ class App
 
     queryBreakpoints: =>
         @win\queryBreakpoints!
+
+    traceGetLast: =>
+        @trace\getLast!
 
 
 Init = (backendStr, proxyCmd, clientCmd) ->

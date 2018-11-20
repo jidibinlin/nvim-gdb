@@ -15,7 +15,7 @@ class TestPdb(unittest.TestCase):
     def test_10_generic(self):
         """=> Test a generic use case."""
         e.Ty(' dp')
-        e.Ty('\n', delay=0.3)
+        e.Ty('\n', until='pause')
         e.Ty('tbreak _main\n')
         e.Ty('cont\n')
         e.In('<esc>')
@@ -49,7 +49,7 @@ class TestPdb(unittest.TestCase):
     def test_20_breakpoint(self):
         """=> Test toggling breakpoints."""
         e.Ty(' dp')
-        e.Ty('\n', delay=0.3)
+        e.Ty('\n', until='pause')
         e.In('<esc>')
 
         e.In('<esc><c-w>k')
@@ -75,7 +75,7 @@ class TestPdb(unittest.TestCase):
     def test_30_navigation(self):
         """=> Test toggling breakpoints while navigating."""
         e.Ty(' dp')
-        e.Ty('\n', delay=0.3)
+        e.Ty('\n', until='pause')
         e.In('<esc>')
 
         e.In('<esc><c-w>k')
@@ -111,7 +111,7 @@ class TestPdb(unittest.TestCase):
     def test_40_until(self):
         """=> Test run until line."""
         e.Ty(' dp')
-        e.Ty('\n', delay=0.3)
+        e.Ty('\n', until='pause')
         e.Ty('tbreak _main\n')
         e.Ty('cont\n')
         e.In('<esc>')

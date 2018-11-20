@@ -25,7 +25,7 @@ class TestBreakpoint(unittest.TestCase):
         """=> Verify manual breakpoint is detected."""
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec["launch"], delay=1)
+                e.Ty(spec["launch"], until='pause')
                 e.Ty(spec["break_main"])
                 e.Ty('run\n', delay=1)
 
@@ -66,7 +66,7 @@ class TestBreakpoint(unittest.TestCase):
         break_bar = {"gdb": "break Bar\n", "lldb": "breakpoint set --fullname Bar\n"}
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec['launch'], delay=1)
+                e.Ty(spec['launch'], until='pause')
                 e.Ty(break_bar[backend])
                 e.In("<esc>:wincmd k<cr>")
                 e.In(":e src/test.cpp\n")
@@ -101,7 +101,7 @@ class TestBreakpoint(unittest.TestCase):
         break_bar = {"gdb": "break Bar\n", "lldb": "breakpoint set --fullname Bar\n"}
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec['launch'], delay=1)
+                e.Ty(spec['launch'], until='pause')
                 e.Ty(break_bar[backend])
                 e.Ty(spec['break_main'])
                 e.In("<esc>:wincmd k<cr>")

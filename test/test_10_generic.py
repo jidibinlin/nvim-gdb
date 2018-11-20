@@ -30,7 +30,7 @@ class TestGdb(unittest.TestCase):
         backend = next(iter(subtests.keys()))
         for c in cases:
             with self.subTest(case=c):
-                e.In(subtests[backend]["launch"], delay=1)
+                e.In(subtests[backend]["launch"], until='pause')
                 for k in c:
                     e.In(k)
                 self.assertEqual(1, e.Eval('tabpagenr("$")'))
@@ -41,9 +41,9 @@ class TestGdb(unittest.TestCase):
         """=> Test a generic use case."""
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec["launch"], delay=1)
+                e.Ty(spec["launch"], until='pause')
                 e.Ty(spec["tbreak_main"])
-                e.Ty('run\n', delay=1)
+                e.Ty('run\n', until='jump')
                 e.In('<esc>')
 
                 cur, breaks = e.GetSigns()
@@ -76,7 +76,7 @@ class TestGdb(unittest.TestCase):
         """=> Test toggling breakpoints."""
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec["launch"], delay=1)
+                e.Ty(spec["launch"], until='pause')
                 e.In('<esc><c-w>k')
                 e.Ty(":e src/test.cpp\n")
                 e.In(':5<cr>')
@@ -101,7 +101,7 @@ class TestGdb(unittest.TestCase):
         """=> Verify that breakpoints are cleaned up after session end."""
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec["launch"], delay=1)
+                e.Ty(spec["launch"], until='pause')
                 e.In('<esc><c-w>k')
                 e.Ty(":e src/test.cpp\n")
                 e.In(':5<cr>')
@@ -125,7 +125,7 @@ class TestGdb(unittest.TestCase):
             backend2 = backend1
 
         # Launch the first backend
-        e.Ty(subtests[backend1]["launch"], delay=1)
+        e.Ty(subtests[backend1]["launch"], until='pause')
         e.Ty(subtests[backend1]["tbreak_main"])
         e.Ty('run\n', delay=1)
         e.In('<esc>')
@@ -140,7 +140,7 @@ class TestGdb(unittest.TestCase):
         self.assertEqual([11], breaks)
 
         # Then launch the second backend
-        e.Ty(subtests[backend2]["launch"], delay=1)
+        e.Ty(subtests[backend2]["launch"], until='pause')
         e.Ty(subtests[backend2]["tbreak_main"])
         e.Ty('run\n', delay=1)
         e.In('<esc>')
@@ -176,7 +176,7 @@ class TestGdb(unittest.TestCase):
         """=> Test interrupt."""
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec["launch"], delay=1)
+                e.Ty(spec["launch"], until='pause')
                 e.Ty('run 4294967295\n', delay=1)
                 e.In('<esc>')
                 e.Ty(':GdbInterrupt\n', delay=0.3)
@@ -191,7 +191,7 @@ class TestGdb(unittest.TestCase):
         """=> Test run until."""
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec["launch"], delay=1)
+                e.Ty(spec["launch"], until='pause')
                 e.Ty(spec["tbreak_main"])
                 e.Ty('run\n', delay=1)
                 e.In('<esc>')
@@ -210,7 +210,7 @@ class TestGdb(unittest.TestCase):
         """=> Test custom programmable keymaps."""
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec["launch"], delay=1)
+                e.Ty(spec["launch"], until='pause')
                 e.Ty(spec["tbreak_main"])
                 e.Ty('run\n', delay=1)
 
@@ -234,7 +234,7 @@ class TestGdb(unittest.TestCase):
         """=> Test the cursor is hidden after program end."""
         for backend, spec in subtests.items():
             with self.subTest(backend=backend):
-                e.Ty(spec["launch"], delay=1)
+                e.Ty(spec["launch"], until='pause')
                 e.Ty(spec["tbreak_main"])
                 e.Ty('run\n', delay=1)
 

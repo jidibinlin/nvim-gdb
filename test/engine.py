@@ -35,15 +35,25 @@ class Engine:
                                 out)]
         return (curline[0] if curline else -1), sorted(breaks)
 
-    def In(self, keys, delay=0.1):
+    def In(self, keys, delay=0.1, until=''):
         """Send a Vim keystroke to NeoVim."""
         self.nvim.input(keys)
         time.sleep(delay)
+        if until:
+            for i in range(5000):
+                if until == self.Eval('luaeval("gdb.app.traceGetLast()")'):
+                    break
+                time.sleep(0.001)
 
-    def Ty(self, keys, delay=0.1):
+    def Ty(self, keys, delay=0.1, until=''):
         """Send a string to NeoVim as if typed."""
         self.nvim.feedkeys(keys, 't')
         time.sleep(delay)
+        if until:
+            for i in range(5000):
+                if until == self.Eval('luaeval("gdb.app.traceGetLast()")'):
+                    break
+                time.sleep(0.001)
 
     def Eval(self, expr):
         """Evaluate a Vim expression."""
